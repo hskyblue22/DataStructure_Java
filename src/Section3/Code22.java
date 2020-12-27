@@ -52,7 +52,13 @@ public class Code22 {
 			Scanner inFile = new Scanner(new File(fileName));
 			while (inFile.hasNext()) {
 				String word = inFile.next();
-				addWord(word);			
+				
+				String trimmed = trimming(word);
+				
+				if (trimmed != null)  {
+					String t = trimmed.toLowerCase();
+					addWord(t);			
+				}
 			}	
 			inFile.close();
 		} catch (FileNotFoundException e) {
@@ -61,15 +67,35 @@ public class Code22 {
 		}	 
 	}
 	
+	static String trimming(String str) {
+		
+		int i=0, j=str.length()-1;
+		while ( i <str.length() && !Character.isLetter( str.charAt(i) ))  // while i-th char is not letter
+			i++;
+		while ( j >= 0 && !Character.isLetter( str.charAt(j) ))  
+			j--;
+		
+		if (i > j)
+			return null;
+		return str.substring(i,j+1);
+	}
+
 	static void addWord(String word) {
 		int index = findWord(word);
-		if (index != 1) {   // found
+		if (index != 1) {   // exist
 			count[index]++;
 		}
-		else {              // not found
-			words[n] = word;
+		else {              // not exist
+			
+			int i = n-1;
+			while (i>=0 && words[i].compareTo(word)>0) {
+				words[i+1] = words[i];
+				count[i+1] = count[i];
+				i--;
+			}
+			words[i] = word;
 			count[n] = 1;
-			n++;
+			n++;                // increase total number of words in words[] 
 		}	
 	}
 	
